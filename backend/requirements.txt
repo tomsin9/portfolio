@@ -1,0 +1,10 @@
+# FastAPI
+fastapi
+uvicorn
+
+# .env Handling
+pydantic-settings
+
+# Database
+sqlmodel
+psycopg2-binary
