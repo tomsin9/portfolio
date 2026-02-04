@@ -5,7 +5,7 @@ import Hero from './components/landing/Hero.vue'
 import BlogSection from './components/landing/BlogSection.vue'
 import FloatingNavbar from './components/FloatingNavbar.vue'
 
-const isDark = useDark()
+const isDark = useDark({ initialValue: 'dark' })
 </script>
 
 <template>

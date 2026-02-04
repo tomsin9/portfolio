@@ -1,4 +1,9 @@
 // src/config/site.ts
+
+/** API base URL (no trailing slash). Use VITE_API_BASE_URL in .env for environment-specific value. */
+const env = (import.meta as unknown as { env?: { VITE_API_BASE_URL?: string } }).env
+export const apiBaseUrl = env?.VITE_API_BASE_URL ?? 'http://127.0.0.1:8000'
+
 export const siteConfig = {
     siteUrl: "https://tomsinp.com",
     siteTitle: "Tom Sin - Full-Stack Web Developer",

@@ -8,3 +8,4 @@ pydantic-settings
 # Database
 sqlmodel
 psycopg2-binary
+alembic

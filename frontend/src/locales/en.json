@@ -12,6 +12,7 @@
         "recentPosts": "Recent Posts",
         "readMore": "Read More",
         "viewAllPosts": "View All Posts",
-        "sectionDescription": "Latest technical insights and project updates."
+        "sectionDescription": "Latest technical insights and project updates.",
+        "noPosts": "No posts yet. Stay tuned!"
     }
 }

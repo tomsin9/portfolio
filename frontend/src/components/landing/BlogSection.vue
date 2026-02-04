@@ -1,27 +1,58 @@
 <script setup lang="ts">
+import { ref, onMounted } from 'vue'
+import axios from 'axios'
 import { useI18n } from 'vue-i18n'
+import { apiBaseUrl } from '@/config/site'
 import { Card, CardHeader, CardTitle, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 
 const { t } = useI18n()
 
-// 暫時 Mock 住先，之後喺呢度 call FastAPI
-const latestPosts = [
-  {
-    id: 1,
-    title: "Building a Modern Portfolio with FastAPI and Vue 3",
-    date: "2026-02-04",
-    excerpt: "Discover the architectural decisions behind this minimal, high-performance portfolio template.",
-    tags: ["Tech"]
-  },
-  {
-    id: 2,
-    title: "The Art of Zinc Design System",
-    date: "2026-02-01",
-    excerpt: "Exploring why the Shadcn 'New York' style is dominating modern web aesthetics.",
-    tags: ["Design"]
+// const latestPosts = [
+//   {
+//     id: 1,
+//     title: "Building a Modern Portfolio with FastAPI and Vue 3",
+//     date: "2026-02-04",
+//     excerpt: "Discover the architectural decisions behind this minimal, high-performance portfolio template.",
+//     tags: ["Tech"]
+//   },
+//   {
+//     id: 2,
+//     title: "The Art of Zinc Design System",
+//     date: "2026-02-01",
+//     excerpt: "Exploring why the Shadcn 'New York' style is dominating modern web aesthetics.",
+//     tags: ["Design"]
+//   }
+// ]
+
+// 定義 Blog 數據結構
+interface Post {
+  id: number
+  title: string
+  date: string
+  excerpt: string
+  tags: string[]
+}
+
+const latestPosts = ref<Post[]>([])
+const isLoading = ref(true)
+
+const fetchPosts = async () => {
+  try {
+    const response = await axios.get(`${apiBaseUrl}/api/v1/blog`, {
+      params: { limit: 2 } // 若 backend 支援 limit 參數可生效
+    })
+    latestPosts.value = response.data
+  } catch (error) {
+    console.error('Failed to fetch blogs:', error)
+  } finally {
+    isLoading.value = false
   }
-]
+}
+
+onMounted(() => {
+  fetchPosts()
+})
 </script>
 
 <template>
@@ -70,6 +101,12 @@ const latestPosts = [
           </Button>
         </CardFooter>
       </Card>
+    </div>
+
+    <div v-if="latestPosts.length === 0" class="flex flex-col items-center justify-center h-full py-12">
+      <p class="text-muted-foreground text-sm">
+        {{ t('blog.noPosts') }}
+      </p>
     </div>
   </section>
 </template>
