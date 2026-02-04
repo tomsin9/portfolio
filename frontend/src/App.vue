@@ -1,8 +1,15 @@
 <script setup lang="ts">
+import { siteConfig } from '@/config/site'
+import { useI18n } from 'vue-i18n'
 import Hero from './components/Hero.vue'
 import { Button } from '@/components/ui/button'
-import { Github, Laptop, Moon, Sun } from 'lucide-vue-next'
+import { Github, Linkedin, Instagram, Mail, Laptop, Moon, Sun } from 'lucide-vue-next'
 
+const { t } = useI18n()
+
+function openInNewTab(url: string) {
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
 </script>
 
 <template>
@@ -12,7 +19,7 @@ import { Github, Laptop, Moon, Sun } from 'lucide-vue-next'
       <div class="container flex h-16 items-center justify-between px-4 md:px-8">
         <div class="flex items-center gap-2">
           <Laptop class="h-6 w-6" />
-          <span class="text-lg font-bold tracking-tight">TOM SIN</span>
+          <span class="text-lg font-bold tracking-tight">{{ siteConfig.author }}</span>
         </div>
         
         <div class="flex items-center gap-4">
@@ -23,8 +30,11 @@ import { Github, Laptop, Moon, Sun } from 'lucide-vue-next'
           </nav>
           
           <div class="flex items-center gap-2">
-            <Button variant="ghost" size="icon">
+            <Button variant="ghost" size="icon" @click="openInNewTab(siteConfig.socials.github)" aria-label="GitHub">
               <Github class="h-5 w-5" />
+            </Button>
+            <Button variant="ghost" size="icon" @click="openInNewTab(siteConfig.socials.linkedin)" aria-label="LinkedIn">
+              <Linkedin class="h-5 w-5" />
             </Button>
             <Button variant="ghost" size="icon">
               <Sun class="h-5 w-5 dark:hidden" />
@@ -44,7 +54,7 @@ import { Github, Laptop, Moon, Sun } from 'lucide-vue-next'
 
     <footer class="border-t border-border py-8">
       <div class="container text-center text-sm text-muted-foreground">
-        © 2026 Tom SIN. Built with FastAPI, Vue 3, Tailwind CSS and shadcn/vue.
+        © 2026 {{ siteConfig.author }}. Built with FastAPI, Vue 3, Tailwind CSS and shadcn/vue.
       </div>
     </footer>
   </div>

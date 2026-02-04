@@ -1,0 +1,9 @@
+{
+    "blog": {
+        "title": "Blog",
+        "description": "Blog Description",
+        "author": "Author",
+        "date": "Date",
+        "content": "Content"
+    }
+}

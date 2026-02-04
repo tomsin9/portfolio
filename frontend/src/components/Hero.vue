@@ -1,7 +1,19 @@
 <script setup>
+import { computed } from 'vue'
+import { useI18n } from 'vue-i18n'
+import { siteConfig } from '@/config/site'
+
 import { Button } from '@/components/ui/button'
 import { Badge } from '@/components/ui/badge'
-import { ArrowRight, Terminal } from 'lucide-vue-next'
+import { ArrowRight, Terminal, Mail } from 'lucide-vue-next'
+
+const { locale, t } = useI18n()
+// 根據當前語言 locale (zh/en) 自動計算要顯示嘅簡介
+const personalInfo = computed(() => siteConfig.personal[locale.value])
+
+function openInNewTab(url) {
+  window.open(url, '_blank', 'noopener,noreferrer')
+}
 </script>
 
 <template>
@@ -16,13 +28,10 @@ import { ArrowRight, Terminal } from 'lucide-vue-next'
           <span>v1.0.0 released</span>
         </div>
 
-        <h1 class="text-4xl font-extrabold tracking-tighter sm:text-5xl md:text-6xl lg:text-7xl">
-          Crafting <span class="text-zinc-500">Digital</span> Experiences
-        </h1>
+        <h1 class="text-4xl font-extrabold tracking-tighter lg:text-6xl" v-html="personalInfo.heroTitle"></h1>
         
         <p class="mx-auto max-w-[700px] text-zinc-500 md:text-xl dark:text-zinc-400">
-          This is Tom SIN, a Full-stack Developer who is passionate about Web Developing.
-          Here is where I record my technical and project works.
+            {{ personalInfo.about }}
         </p>
 
         <div class="flex flex-col gap-2 min-[400px]:flex-row pt-4">
@@ -31,8 +40,9 @@ import { ArrowRight, Terminal } from 'lucide-vue-next'
             <ArrowRight class="ml-2 h-4 w-4" />
           </Button>
           
-          <Button variant="outline" size="lg" class="px-8">
+          <Button variant="outline" size="lg" class="px-8" @click="openInNewTab(siteConfig.socials.email)">
             Contact Me
+            <Mail class="ml-2 h-4 w-4" />
           </Button>
         </div>
       </div>
