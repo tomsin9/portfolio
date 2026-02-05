@@ -1,10 +1,10 @@
-# Portfolio Website
+# Personal website
 
-A personal portfolio site with a Vue 3 frontend and FastAPI backend.
+A personal website with a Vue 3 frontend and FastAPI backend.
 
 ## Tech Stack
 
-- **Frontend:** Vue 3, TypeScript, Vite, Tailwind CSS, shadcn/vue
+- **Frontend:** Vue 3, TypeScript, Vite, Tailwind CSS, shadcn/vue, GSAP, etc.
 - **Backend:** FastAPI, SQLModel, PostgreSQL
 - **DevOps:** Docker, docker-compose
 
