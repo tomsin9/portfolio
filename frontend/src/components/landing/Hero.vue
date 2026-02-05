@@ -14,6 +14,12 @@ const personalInfo = computed(() => siteConfig.personal[locale.value])
 function openInNewTab(url) {
   window.open(url, '_blank', 'noopener,noreferrer')
 }
+
+function scrollToContact() {
+  const el = document.getElementById('contact')
+  if (el) el.scrollIntoView({ behavior: 'smooth', block: 'start' })
+}
+
 </script>
 
 <template>
@@ -40,7 +46,11 @@ function openInNewTab(url) {
             <ArrowRight class="ml-2 h-4 w-4" />
           </Button>
 
-          <div class="flex flex-row gap-2">
+          <Button size="lg" variant="outline" class="px-7 font-bold tracking-wide" as="a" href="#contact" @click.prevent="scrollToContact">
+            {{ t('system.contactMe') }}
+          </Button>
+
+          <!-- <div class="flex flex-row gap-2">
             <Button
               variant="outline"
               size="icon-lg"
@@ -88,7 +98,7 @@ function openInNewTab(url) {
               <Mail class="h-4 w-4" />
               <span class="sr-only">{{ t('system.contactMe') }}</span>
             </Button>
-          </div>
+          </div> -->
         </div>
       </div>
     </div>

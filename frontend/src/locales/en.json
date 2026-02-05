@@ -1,18 +1,38 @@
 {
     "system": {
         "toggleTheme": "Toggle Theme",
-        "viewProjects": "View Projects"
+        "viewProjects": "View Projects",
+        "contactMe": "Contact Me",
+        "switchToZH": "Switch to Chinese",
+        "switchToEN": "Switch to English",
+        "lightMode": "Light Mode",
+        "darkMode": "Dark Mode"
+    },
+    "navbar": {
+        "home": "Home",
+        "projects": "Projects",
+        "blog": "Blog",
+        "contact": "Contact"
     },
     "blog": {
         "title": "Blog",
-        "description": "Blog Description",
+        "description": "Latest technical insights and project updates.",
+        "sectionTitle": "Posts",
+        "sectionDescription": "Latest technical insights and project updates.",
         "author": "Author",
         "date": "Date",
         "content": "Content",
         "recentPosts": "Recent Posts",
         "readMore": "Read More",
         "viewAllPosts": "View All Posts",
-        "sectionDescription": "Latest technical insights and project updates.",
         "noPosts": "No posts yet. Stay tuned!"
+    },
+    "contact": {
+        "title": "Let's Connect",
+        "description": "I'm always open to discussing new projects, creative ideas or opportunities to be part of your visions.",
+        "email": "Email",
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram"
     }
 }

@@ -1,18 +1,38 @@
 {
     "system": {
         "toggleTheme": "切換主題",
-        "viewProjects": "查看專案"
+        "viewProjects": "查看專案",
+        "contactMe": "聯絡我",
+        "switchToZH": "切換至中文",
+        "switchToEN": "切換至英文",
+        "lightMode": "日間模式",
+        "darkMode": "夜間模式"
+    },
+    "navbar": {
+        "home": "首頁",
+        "projects": "專案",
+        "blog": "網誌",
+        "contact": "聯絡我"
     },
     "blog": {
-        "title": "文章",
-        "description": "文章描述",
+        "title": "網誌",
+        "description": "最新技術洞察和項目更新。",
+        "sectionTitle": "文章",
+        "sectionDescription": "最新技術洞察和項目更新。",
         "author": "作者",
         "date": "日期",
         "content": "內容",
         "recentPosts": "近期文章",
         "readMore": "閱讀更多",
         "viewAllPosts": "查看所有文章",
-        "sectionDescription": "最新技術洞察和項目更新。",
         "noPosts": "暫無文章。敬請期待！"
+    },
+    "contact": {
+        "title": "聯絡我",
+        "description": "我隨時準備與你討論新專案、創意想法或機會，成為你視野的一部分。",
+        "email": "電郵",
+        "github": "GitHub",
+        "linkedin": "LinkedIn",
+        "instagram": "Instagram"
     }
 }

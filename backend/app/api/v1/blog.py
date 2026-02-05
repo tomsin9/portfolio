@@ -1,6 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException
-from sqlmodel import Session, select
-from typing import List
+from fastapi import APIRouter, Depends, HTTPException, Query
+from sqlmodel import Session, select, func
+from typing import List, Dict, Any
 
 from app.db import get_session
 from app.core.auth import get_current_username
@@ -35,16 +35,31 @@ def create_blog(
 
 
 # Read all Blog Posts
-@router.get("/", response_model=List[Blog])
-def read_blogs(session: Session = Depends(get_session)):
-    """
-    Read all Blog Posts from the PostgreSQL
-    """
-    statement = select(Blog).where(Blog.is_published == True)
-    results = session.exec(statement)
-    
-    blogs = results.all()
-    return blogs
+@router.get("/", response_model=Dict[str, Any])
+def read_blogs(
+    *,
+    session: Session = Depends(get_session),
+    page: int = Query(1, ge=1),      # Which page, default 1
+    size: int = Query(12, ge=1, le=100) # How many records per page, default 12
+):
+    # 1. Calculate OFFSET (skip how many records)
+    # For example, page=2, size=6, offset = (2-1)*6 = 6
+    offset = (page - 1) * size
+
+    # 2. Query the data for the current page
+    statement = select(Blog).order_by(Blog.date.desc()).offset(offset).limit(size)
+    results = session.exec(statement).all()
+
+    # 3. Query the total number (used for Pagination UI)
+    total_statement = select(func.count()).select_from(Blog)
+    total = session.exec(total_statement).one()
+
+    return {
+        "items": results,
+        "total": total,
+        "page": page,
+        "size": size
+    }
 
 
 # Read a specific Blog Post
