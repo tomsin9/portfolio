@@ -41,7 +41,8 @@ async def lifespan(app: FastAPI):
 app = FastAPI(
     title="Personal website API",
     lifespan=lifespan,
-    docs_url="/admin/414"
+    docs_url="/admin/414",
+    swagger_ui_parameters={"persistAuthorization": True},  # Remember auth in Swagger UI
 )
 
 app.include_router(api_router, prefix="/api/v1")

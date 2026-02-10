@@ -1,6 +1,7 @@
 # FastAPI
 fastapi
 uvicorn
+pyjwt
 
 # .env Handling
 pydantic-settings
