@@ -21,7 +21,7 @@ onMounted(async () => {
 </script>
 
 <template>
-  <div v-if="post" class="container py-20 animate-in fade-in duration-700">
+  <div v-if="post" class="container pt-12 pb-32 lg:pt-20 lg:pb-40 animate-in fade-in duration-700">
     
     <Button as="a" href="/" variant="link" class="p-0 h-auto mb-4 text-muted-foreground hover:text-foreground">
       <ArrowLeftIcon class="w-4 h-4" />

@@ -69,7 +69,7 @@ watch(
 </script>
 
 <template>
-  <div class="container max-w-5xl py-20 px-4 md:px-8">
+  <div class="container max-w-5xl pt-12 pb-32 lg:pt-20 lg:pb-40 px-4 md:px-8">
     <div class="text-center mb-12">
       <h2 class="text-4xl lg:text-5xl font-bold mb-6">
         {{ t('blog.title') }}
