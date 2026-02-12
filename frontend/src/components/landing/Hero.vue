@@ -38,19 +38,19 @@ function scrollToContact() {
           <span>Full Stack Web Developer</span>
         </div>
 
-        <h1 class="text-4xl font-extrabold tracking-tighter md:text-5xl lg:text-6xl" v-html="personalInfo.heroTitle"></h1>
+        <h1 class="text-4xl font-extrabold tracking-tight md:text-5xl lg:text-6xl" v-html="personalInfo.heroTitle"></h1>
         
         <p class="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
             {{ personalInfo.heroDescription }}
         </p>
 
         <div class="flex flex-col gap-2 min-[400px]:flex-row justify-center items-center pt-4">
-          <Button size="lg" class="px-7 font-bold tracking-wide" as="a" href="#projects" @click.prevent="scrollToProjects">
+          <Button size="lg" class="font-bold tracking-wide w-full md:w-auto" as="a" href="#projects" @click.prevent="scrollToProjects">
             {{ t('system.viewProjects') }}
             <ArrowRight class="ml-2 h-4 w-4" />
           </Button>
 
-          <Button size="lg" variant="outline" class="px-7 font-bold tracking-wide" as="a" href="#contact" @click.prevent="scrollToContact">
+          <Button size="lg" variant="outline" class="font-bold tracking-wide w-full md:w-auto" as="a" href="#contact" @click.prevent="scrollToContact">
             {{ t('system.contactMe') }}
           </Button>
 

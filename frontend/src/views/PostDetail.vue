@@ -5,6 +5,7 @@ import { apiBaseUrl } from '@/config/site'
 import axios from 'axios'
 import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
+import { formatDateTime } from '@/lib/formatDate'
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -16,7 +17,7 @@ import {
 
 import type { Post } from '@/types/blog'
 
-const { t } = useI18n()
+const { t, locale } = useI18n()
 const props = defineProps(['id'])
 const post = ref<Post | null>(null)
 
@@ -48,11 +49,11 @@ onMounted(async () => {
       </BreadcrumbList>
     </Breadcrumb>
 
-    <h1 class="text-4xl md:text-5xl font-bold tracking-tight mb-4">{{ post.title }}</h1>
-    <p class="text-muted-foreground mb-8">{{ new Date(post.date).toLocaleDateString() }}</p>
+    <p class="text-sm text-muted-foreground mb-4">{{ formatDateTime(post.created_at, locale) }}</p>
+    <h1 class="text-4xl font-bold tracking-tight mb-8">{{ post.title }}</h1>
     
     <article 
-      class="prose dark:prose-invert max-w-none mt-12"
+      class="prose dark:prose-invert prose-headings:font-semibold prose-pre:border max-w-none mt-12"
       v-html="marked(post.content ?? '')"
     ></article>
   </div>

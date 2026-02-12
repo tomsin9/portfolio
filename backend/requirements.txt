@@ -1,13 +1,16 @@
-# FastAPI
+# FastAPI & Server
 fastapi
 uvicorn
-pyjwt
+python-multipart
+
+# Security (JWT & Hashing)
+python-jose[cryptography]
+passlib[bcrypt]
 
 # .env Handling
 pydantic-settings
 
-# Database
+# Database & Admin
 sqlmodel
 psycopg2-binary
 alembic
-sqladmin

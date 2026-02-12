@@ -39,29 +39,6 @@ A personal website with a Vue 3 frontend and FastAPI backend.
    - If port 80 is already in use on your server, set `FRONTEND_PORT=8080` (or another port) in `.env`.  
    - Frontend uses `frontend/Dockerfile` (multi-stage build + nginx). Dev uses `frontend/Dockerfile.dev`.
 
-### Without Docker
-
-**Backend**
-
-```bash
-cd backend
-python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
-pip install -r requirements.txt
-# Set DATABASE_URL and other vars (see .env.example), then:
-uvicorn app.main:app --reload --port 8000
-```
-
-**Frontend**
-
-```bash
-cd frontend
-npm install
-npm run dev
-```
-
-Frontend runs at http://localhost:5173. Set `VITE_API_URL` if your API is not at `http://localhost:8000`.
-
 ## Project Structure
 
 ```

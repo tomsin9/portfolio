@@ -7,12 +7,28 @@ const localeMap: Record<string, string> = {
   zh: 'zh-HK',
 }
 
+/** For datetime we use British English (en-GB) with AM/PM. */
+const datetimeLocaleMap: Record<string, string> = {
+  en: 'en-GB',
+  zh: 'zh-HK',
+}
+
 export type DateFormatStyle = 'short' | 'medium' | 'long'
 
 const defaultOptions: Intl.DateTimeFormatOptions = {
   year: 'numeric',
   month: 'short',
   day: 'numeric',
+}
+
+/**
+ * Parse ISO date string. If no timezone (Z or ±HH:MM), treat as UTC so
+ * backend UTC times display correctly in user's local timezone (e.g. Hong Kong).
+ */
+function parseAsUtcIfNeeded(isoDate: string): Date {
+  const s = isoDate.trim()
+  const hasOffset = /[Zz]$|[+-]\d{2}:?\d{2}$/.test(s)
+  return new Date(hasOffset ? s : s + 'Z')
 }
 
 /**
@@ -29,7 +45,7 @@ export function formatDate(
   locale?: string,
   style: DateFormatStyle = 'medium'
 ): string {
-  const d = new Date(isoDate)
+  const d = parseAsUtcIfNeeded(isoDate)
   if (Number.isNaN(d.getTime())) return isoDate
 
   const intlLocale = locale ? localeMap[locale] ?? locale : undefined
@@ -40,5 +56,25 @@ export function formatDate(
         ? { year: 'numeric', month: 'long', day: 'numeric', weekday: 'long' }
         : defaultOptions
 
+  return new Intl.DateTimeFormat(intlLocale, options).format(d)
+}
+
+/**
+ * Format an ISO date-time for display with time (AM/PM or 上午/下午).
+ * Chinese uses 上午/下午; English uses British format (en-GB) with AM/PM.
+ */
+export function formatDateTime(isoDate: string, locale?: string): string {
+  const d = parseAsUtcIfNeeded(isoDate)
+  if (Number.isNaN(d.getTime())) return isoDate
+
+  const intlLocale = locale ? datetimeLocaleMap[locale] ?? localeMap[locale] ?? locale : undefined
+  const options: Intl.DateTimeFormatOptions = {
+    year: 'numeric',
+    month: 'long',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+    hour12: true,
+  }
   return new Intl.DateTimeFormat(intlLocale, options).format(d)
 }

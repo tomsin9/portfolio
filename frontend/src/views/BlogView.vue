@@ -70,9 +70,13 @@ watch(
 
 <template>
   <div class="container max-w-5xl py-24 px-4 md:px-8">
-    <div class="mb-12">
-      <h1 class="text-4xl font-bold tracking-tight mb-4">{{ t('blog.title') }}</h1>
-      <p class="text-muted-foreground">{{ t('blog.description') }}</p>
+    <div class="text-center mb-12">
+      <h2 class="text-4xl lg:text-5xl font-bold mb-6">
+        {{ t('blog.title') }}
+      </h2>
+      <p class="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
+        {{ t('blog.description') }}
+      </p>
     </div>
 
     <div v-if="isLoading" class="grid gap-6 sm:grid-cols-2">
@@ -86,12 +90,12 @@ watch(
             <CardHeader>
               <div class="flex justify-between text-xs text-muted-foreground mb-2">
                 <span>{{ post.tags?.[0] }}</span>
-                <time>{{ formatDate(post.date, locale) }}</time>
+                <time>{{ formatDate(post.created_at, locale) }}</time>
               </div>
               <CardTitle class="line-clamp-2">{{ post.title }}</CardTitle>
             </CardHeader>
             <CardContent>
-              <p class="text-sm text-muted-foreground line-clamp-2">{{ post.excerpt || '...' }}</p>
+              <p class="text-sm text-muted-foreground line-clamp-2">{{ post.excerpt || post.content?.substring(0, 100) + '...' }}</p>
             </CardContent>
           </Card>
         </router-link>

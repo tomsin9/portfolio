@@ -2,6 +2,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from sqlmodel import Session, select
 from typing import List
 
+from app.api.deps import get_current_user
 from app.db.session import get_session
 from app.models.project import Project
 from app.schemas.project import ProjectRead
@@ -16,10 +17,11 @@ def read_projects(session: Session = Depends(get_session)):
 
 @router.post("/", response_model=Project)
 def create_project(
-    *,
-    session: Session = Depends(get_session),
-    project_in: Project
-):
+        *,
+        session: Session = Depends(get_session),
+        project_in: Project,
+        username: str = Depends(get_current_user)
+    ):
     # db_project = Project.model_validate(project_in)
     
     session.add(project_in)
@@ -30,10 +32,11 @@ def create_project(
 
 @router.patch("/{project_id}", response_model=Project)
 def update_project(
-    project_id: int, 
-    project_in: Project, 
-    session: Session = Depends(get_session)
-):
+        project_id: int, 
+        project_in: Project, 
+        session: Session = Depends(get_session),
+        username: str = Depends(get_current_user)
+    ):
     db_project = session.get(Project, project_id)
     if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")
@@ -51,7 +54,11 @@ def update_project(
 
 
 @router.delete("/{project_id}")
-def delete_project(project_id: int, session: Session = Depends(get_session)):
+def delete_project(
+        project_id: int, 
+        session: Session = Depends(get_session), 
+        username: str = Depends(get_current_user)
+    ):
     db_project = session.get(Project, project_id)
     if not db_project:
         raise HTTPException(status_code=404, detail="Project not found")

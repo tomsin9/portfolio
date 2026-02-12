@@ -80,17 +80,17 @@ onMounted(() => {
               <span v-if="post.tags && post.tags.length > 0" class="text-[10px] uppercase tracking-widest font-bold px-2 py-0.5 bg-secondary text-secondary-foreground rounded">
                   {{ post.tags[0] }}
               </span>
-              <time class="text-xs text-muted-foreground" :datetime="post.date">
-                {{ formatDate(post.date, locale) }}
+              <time class="text-xs text-muted-foreground" :datetime="post.created_at">
+                {{ formatDate(post.created_at, locale) }}
               </time>
             </div>
-            <CardTitle class="text-2xl font-bold leading-tight tracking-tight">
+            <CardTitle class="text-xl font-bold leading-tight tracking-tight">
               {{ post.title }}
             </CardTitle>
           </CardHeader>
           <CardContent>
             <p class="text-muted-foreground line-clamp-2 text-sm leading-relaxed">
-              {{ post.excerpt || 'Read more about this post...' }}
+              {{ post.excerpt || post.content?.substring(0, 100) + '...' }}
             </p>
           </CardContent>
           <CardFooter>
