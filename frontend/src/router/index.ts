@@ -7,7 +7,7 @@ import PostDetail from '../views/PostDetail.vue'
 
 const routes = [
     { path: '/', name: 'home', component: HomeView },
-    { path: '/admin/login', name: 'admin-login', component: AdminLogin },
+    { path: '/secret/login', name: 'admin-login', component: AdminLogin },
     { path: '/blog', name: 'post-list', component: BlogView },
     { path: '/blog/post/:id', name: 'post-detail', component: PostDetail, props: true }
 ]
