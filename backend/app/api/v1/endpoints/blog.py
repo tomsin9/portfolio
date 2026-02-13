@@ -4,7 +4,7 @@ from fastapi import APIRouter, Depends, HTTPException, Query
 from sqlmodel import Session, select, func
 from typing import List, Dict, Any
 
-from app.api.deps import get_current_user
+from app.api.deps import get_current_user, get_current_user_optional
 from app.db.session import get_session
 from app.models.blog import Blog
 
@@ -38,11 +38,17 @@ def read_posts(
     }
 
 
-# Read a specific Blog Post
+# Read a specific Blog Post (drafts only visible to authenticated admin)
 @router.get("/{blog_id}", response_model=Blog)
-def read_post(blog_id: int, session: Session = Depends(get_session)):
+def read_post(
+    blog_id: int,
+    session: Session = Depends(get_session),
+    current_user: str | None = Depends(get_current_user_optional),
+):
     blog = session.get(Blog, blog_id)
-    if not blog or not blog.is_published:
+    if not blog:
+        raise HTTPException(status_code=404, detail="Post not found")
+    if not blog.is_published and not current_user:
         raise HTTPException(status_code=404, detail="Post not found")
     return blog
 

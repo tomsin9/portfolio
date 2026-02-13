@@ -8,6 +8,8 @@ import { Skeleton } from '@/components/ui/skeleton'
 import BlogCard from '@/components/BlogCard.vue'
 import { useRoute, useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
+import { auth } from '@/store/auth'
+import { PlusIcon } from 'lucide-vue-next'
 import {
   Pagination,
   PaginationContent,
@@ -78,6 +80,17 @@ watch(
       <p class="mx-auto max-w-[700px] text-muted-foreground md:text-xl">
         {{ t('blog.description') }}
       </p>
+      <Button
+        v-if="auth.isAdmin"
+        as="a"
+        :href="'/blog/post/new'"
+        variant="default"
+        size="sm"
+        class="mt-4"
+      >
+        <PlusIcon class="w-4 h-4 mr-2" />
+        {{ t('blog.createPost') }}
+      </Button>
     </div>
 
     <div v-if="isLoading" class="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mb-10">
@@ -103,7 +116,7 @@ watch(
 
     <div v-else-if="posts.length > 0">
       <div class="grid gap-6 sm:grid-cols-2 lg:grid-cols-2 mb-10">
-        <router-link v-for="post in posts" :key="post.id" :to="{ name: 'post-detail', params: { id: post.id } }" class="block">
+        <router-link v-for="post in posts" :key="post.id" :to="{ name: 'post-detail', params: { id: post.id }, state: { from: 'blog' } }" class="block">
           <BlogCard :post="post" />
         </router-link>
       </div>

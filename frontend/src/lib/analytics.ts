@@ -11,7 +11,7 @@ declare global {
   }
 }
 
-/** Call from main.ts to load gtag.js and config GA4. No-op if ID is not set. */
+/** Same as Google’s gtag snippet: dataLayer + gtag stub, then 'js' + 'config', then load gtag.js. */
 export function initGoogleAnalytics(): void {
   if (!GA_ID || typeof GA_ID !== 'string' || GA_ID.trim() === '') return
 
@@ -20,15 +20,12 @@ export function initGoogleAnalytics(): void {
     window.dataLayer!.push(arguments)
   }
   window.gtag('js', new Date())
+  window.gtag('config', GA_ID)
 
   const script = document.createElement('script')
   script.async = true
   script.src = `https://www.googletagmanager.com/gtag/js?id=${GA_ID}`
   document.head.appendChild(script)
-
-  script.onload = () => {
-    window.gtag!('config', GA_ID)
-  }
 }
 
 export function trackPageView(path: string): void {

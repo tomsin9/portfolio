@@ -1,9 +1,9 @@
 /**
  * Map vue-i18n locale to Intl locale for date formatting.
- * Use zh-HK for Traditional Chinese (Hong Kong).
+ * Use en-GB for British English; zh-HK for Traditional Chinese (Hong Kong).
  */
 const localeMap: Record<string, string> = {
-  en: 'en',
+  en: 'en-GB',
   zh: 'zh-HK',
 }
 

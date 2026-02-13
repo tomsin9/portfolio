@@ -1,23 +1,54 @@
 <script setup lang="ts">
-import { ref, onMounted, reactive } from 'vue'
+import { ref, onMounted, reactive, computed } from 'vue'
 import { apiBaseUrl } from '@/config/site'
 import axios from 'axios'
 import { marked } from 'marked'
 import { useI18n } from 'vue-i18n'
 import { auth } from '@/store/auth'
 import { formatDate, formatDateTime } from '@/lib/formatDate'
-import { ArrowLeftIcon, PencilIcon, SaveIcon, XIcon, PlusIcon } from 'lucide-vue-next'
+import { ArrowLeftIcon, PencilIcon, SaveIcon, XIcon, PlusIcon, Trash2Icon } from 'lucide-vue-next'
+import {
+  AlertDialogRoot,
+  AlertDialogTrigger,
+  AlertDialogPortal,
+  AlertDialogOverlay,
+  AlertDialogContent,
+  AlertDialogTitle,
+  AlertDialogDescription,
+  AlertDialogCancel,
+  AlertDialogAction
+} from 'reka-ui'
+import { useRouter } from 'vue-router'
 import { Button } from '@/components/ui/button'
 import type { Post } from '@/types/blog'
 import { toast } from 'vue-sonner'
 import Editor from '@/components/Editor.vue'
 
 const { t, locale } = useI18n()
-const props = defineProps(['id'])
+const router = useRouter()
+const props = defineProps<{ id: string }>()
+
+const backToBlog = computed(() => {
+  const state = window.history.state as { from?: string } | undefined
+  if (state?.from === 'blog') return true
+  try {
+    const ref = document.referrer
+    if (!ref) return false
+    const refUrl = new URL(ref)
+    const origin = window.location.origin
+    if (refUrl.origin !== origin) return false
+    return refUrl.pathname === '/blog' || refUrl.pathname.startsWith('/blog?')
+  } catch {
+    return false
+  }
+})
 
 const post = ref<Post | null>(null)
+const loadError = ref<string | null>(null)
 const isEditing = ref(false)
 const isSaving = ref(false)
+const isDeleting = ref(false)
+const deleteDialogOpen = ref(false)
 const newTag = ref('')
 
 const editForm = reactive({
@@ -29,8 +60,16 @@ const editForm = reactive({
 })
 
 onMounted(async () => {
-  const response = await axios.get(`${apiBaseUrl}/api/v1/blog/${props.id}`)
-  post.value = response.data
+  loadError.value = null
+  try {
+    const headers = auth.token ? { Authorization: `Bearer ${auth.token}` } : {}
+    const response = await axios.get(`${apiBaseUrl}/api/v1/blog/${props.id}`, { headers })
+    post.value = response.data
+  } catch (err) {
+    loadError.value = axios.isAxiosError(err) && err.response?.status === 404
+      ? t('blog.postNotFound')
+      : 'Failed to load post'
+  }
 })
 
 const startEditing = () => {
@@ -98,22 +137,82 @@ const saveEdit = async () => {
     isSaving.value = false
   }
 }
+
+const confirmDelete = async () => {
+  if (!post.value) return
+  isDeleting.value = true
+  try {
+    await axios.delete(`${apiBaseUrl}/api/v1/blog/${props.id}`, {
+      headers: { Authorization: `Bearer ${auth.token}` }
+    })
+    deleteDialogOpen.value = false
+    toast.success(t('blog.deletePostSuccess'))
+    await router.push('/blog')
+  } catch (err: unknown) {
+    console.error(err)
+    const msg =
+      axios.isAxiosError(err) && err.response?.data?.detail
+        ? String(err.response.data.detail)
+        : axios.isAxiosError(err) && err.response?.status === 401
+          ? t('auth.pleaseLogInAgain')
+          : 'Failed to delete post'
+    toast.error(msg)
+  } finally {
+    isDeleting.value = false
+  }
+}
+
 </script>
 
 <template>
-  <div v-if="post" class="container pt-12 pb-32 lg:pt-20 lg:pb-40 animate-in fade-in duration-700">
+  <div v-if="loadError" class="container pt-12 pb-32 lg:pt-20 lg:pb-40">
+    <p class="text-muted-foreground">{{ loadError }}</p>
+    <Button as="a" href="/blog" variant="link" class="mt-4">{{ t('navbar.blog') }}</Button>
+  </div>
+  <div v-else-if="post" class="container pt-12 pb-32 lg:pt-20 lg:pb-40 animate-in fade-in duration-700">
 
     <div class="flex justify-between items-center mb-4">
-      <Button as="a" href="/" variant="link" class="p-0 h-auto mb-4 text-muted-foreground hover:text-foreground">
+      <Button
+        as="a"
+        :href="backToBlog ? '/blog' : '/'"
+        variant="link"
+        class="p-0 h-auto mb-4 text-muted-foreground hover:text-foreground"
+      >
         <ArrowLeftIcon class="w-4 h-4" />
-        {{ t('system.backToHome') }}
+        {{ backToBlog ? t('blog.backToBlog') : t('system.backToHome') }}
       </Button>
-  
+
       <div v-if="auth.isAdmin" class="flex gap-2 mb-4">
         <Button v-if="!isEditing" @click="startEditing" variant="outline" size="sm">
           <PencilIcon class="w-4 h-4 mr-2" />
           {{ t('blog.editPost') }}
         </Button>
+        <AlertDialogRoot v-if="!isEditing" v-model:open="deleteDialogOpen">
+          <AlertDialogTrigger as-child>
+            <Button variant="outline" size="icon-sm" aria-label="t('blog.deletePost')" class="text-destructive border-destructive/50 hover:bg-destructive/10">
+              <Trash2Icon class="w-4 h-4" />
+            </Button>
+          </AlertDialogTrigger>
+          <AlertDialogPortal>
+            <AlertDialogOverlay class="fixed inset-0 z-50 bg-background/80 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+            <AlertDialogContent class="fixed left-[50%] top-[50%] z-50 grid w-full max-w-lg translate-x-[-50%] translate-y-[-50%] gap-4 border bg-background p-6 shadow-lg duration-200 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[state=closed]:slide-out-to-left-1/2 data-[state=closed]:slide-out-to-top-[48%] data-[state=open]:slide-in-from-left-1/2 data-[state=open]:slide-in-from-top-[48%] sm:rounded-lg">
+              <AlertDialogTitle class="text-lg font-semibold">{{ t('blog.deletePostConfirmTitle') }}</AlertDialogTitle>
+              <AlertDialogDescription class="text-sm text-muted-foreground">
+                {{ t('blog.deletePostConfirmDescription') }}
+              </AlertDialogDescription>
+              <div class="flex justify-end gap-2 pt-2">
+                <AlertDialogAction as-child>
+                  <Button variant="destructive" :disabled="isDeleting" @click.prevent="confirmDelete">
+                    {{ isDeleting ? t('system.saving') : t('blog.deletePost') }}
+                  </Button>
+                </AlertDialogAction>
+                <AlertDialogCancel as-child>
+                  <Button variant="outline">{{ t('system.cancel') }}</Button>
+                </AlertDialogCancel>
+              </div>
+            </AlertDialogContent>
+          </AlertDialogPortal>
+        </AlertDialogRoot>
         <div v-else class="flex gap-2">
           <Button @click="saveEdit" :disabled="isSaving" variant="default" size="sm">
             <SaveIcon class="w-4 h-4 mr-2" />
@@ -126,12 +225,11 @@ const saveEdit = async () => {
         </div>
       </div>
     </div>
-  
-    <hr class="my-4" />
+
     <p class="text-xs md:text-sm text-muted-foreground mb-4">
       {{ formatDate(post.created_at, locale) }}
-      <template v-if="post.updated_at">
-        · {{ t('blog.updatedAt') }} {{ formatDateTime(post.updated_at, locale) }}
+      <template v-if="post.updated_at && formatDateTime(post.updated_at, locale) !== formatDateTime(post.created_at, locale)">
+        · {{ t('blog.updatedOn') }} {{ formatDateTime(post.updated_at, locale) }}
       </template>
     </p>
 
@@ -213,7 +311,7 @@ const saveEdit = async () => {
     <p v-else-if="post.excerpt" class="text-lg text-muted-foreground mb-4">{{ post.excerpt }}</p>
 
     <div class="mt-12">
-      <article 
+      <article
         v-if="!isEditing"
         class="prose dark:prose-invert prose-headings:font-semibold prose-pre:border max-w-none"
         v-html="marked(post.content ?? '')"
