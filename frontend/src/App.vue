@@ -16,9 +16,10 @@ const SEASONS_EFFECT_STORAGE_KEY = 'seasons-effect-on'
 function getStoredSeasonsEffect(): boolean {
   try {
     const stored = localStorage.getItem(SEASONS_EFFECT_STORAGE_KEY)
-    return stored === null ? true : stored === 'true'
+    // Default off; only on if user has previously turned it on (stored 'true')
+    return stored === 'true'
   } catch {
-    return true
+    return false
   }
 }
 
