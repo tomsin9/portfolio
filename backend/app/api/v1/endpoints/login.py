@@ -38,20 +38,14 @@ def _verify_turnstile_sync(token: str, remote_ip: str | None) -> bool:
         return False
 
 
-def _is_swagger_or_docs_request(request: Request) -> bool:
-    """True if request is from Swagger UI / OpenAPI docs (so we can skip Turnstile)."""
-    referer = (request.headers.get("referer") or "").lower()
-    return "/admin" in referer or "swagger" in referer or "openapi" in referer
-
-
 @router.post("/token")
 async def login_for_access_token(
     request: Request,
     form_data: OAuth2PasswordRequestForm = Depends(),
 ):
-    # Require Turnstile only for non-Swagger requests (Swagger UI cannot send X-Turnstile-Token)
-    if settings.TURNSTILE_SECRETKEY and not _is_swagger_or_docs_request(request):
-        turnstile_token = request.headers.get("X-Turnstile-Token") or ""
+    # Only verify Turnstile when client sent X-Turnstile-Token (e.g. frontend). Swagger never sends it → skip.
+    turnstile_token = (request.headers.get("X-Turnstile-Token") or "").strip()
+    if settings.TURNSTILE_SECRETKEY and turnstile_token:
         remote_ip = request.client.host if request.client else None
         ok = await asyncio.to_thread(_verify_turnstile_sync, turnstile_token, remote_ip)
         if not ok:
